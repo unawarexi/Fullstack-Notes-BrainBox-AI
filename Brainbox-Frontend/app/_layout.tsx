@@ -1,24 +1,68 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import { LogBox } from "react-native";
+import "react-native-reanimated";
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "../global.css";
+
+
+LogBox.ignoreLogs(["Clerk:"]);
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    "Jakarta-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
+    "Jakarta-ExtraBold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
+    "Jakarta-ExtraLight": require("../assets/fonts/PlusJakartaSans-ExtraLight.ttf"),
+    "Jakarta-Light": require("../assets/fonts/PlusJakartaSans-Light.ttf"),
+    "Jakarta-Medium": require("../assets/fonts/PlusJakartaSans-Medium.ttf"),
+    Jakarta: require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
+    "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
+  });
+
+  const [showCustomSplash, setShowCustomSplash] = useState(true);
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  useEffect(() => {
+    // Hide custom splash after 3 seconds (matching animation duration)
+    if (loaded) {
+      const timer = setTimeout(() => {
+        setShowCustomSplash(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [loaded]);
+
+  if (!loaded || showCustomSplash) {
+    return <splashScreenv2 />;
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+    
+         
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(main)" />
+              <Stack.Screen name="(screens)" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+       
+
+      </GestureHandlerRootView>
+    </>
   );
 }
