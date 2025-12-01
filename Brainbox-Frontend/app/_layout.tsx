@@ -9,6 +9,7 @@ import "react-native-reanimated";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "../global.css";
+import SplashScreenv2 from "./splash-screenv2";
 
 
 LogBox.ignoreLogs(["Clerk:"]);
@@ -44,7 +45,7 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded || showCustomSplash) {
-    return <splashScreenv2 />;
+    return <SplashScreenv2 />;
   }
 
   return (
@@ -55,8 +56,8 @@ export default function RootLayout() {
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" />
               <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(main)" />
-              <Stack.Screen name="(screens)" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="screens" />
               <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="auto" />
