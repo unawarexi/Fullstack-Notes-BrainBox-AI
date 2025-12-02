@@ -131,7 +131,7 @@ const Onboarding = () => {
 
             {/* Next/Get Started Button */}
             <TouchableOpacity
-              onPress={() => (isLastSlide ? router.replace("/(auth)/sign-up") : swiperRef.current?.scrollBy(1))}
+              onPress={() => (isLastSlide ? router.replace("/(auth)/welcome") : swiperRef.current?.scrollBy(1))}
               className="w-14 h-14 bg-gray-900 rounded-full items-center justify-center"
               style={{
                 shadowColor: "#000",
@@ -147,7 +147,7 @@ const Onboarding = () => {
 
           {/* Right Side - Skip Button */}
           <TouchableOpacity
-            onPress={() => router.replace("/(auth)/sign-up")}
+            onPress={() => router.replace("/(auth)/welcome")}
             className="pl-20"
             style={{
               elevation: 4,
