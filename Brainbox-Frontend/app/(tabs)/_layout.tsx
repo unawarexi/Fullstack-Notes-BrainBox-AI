@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Colors } from "@/constants/theme";
 import { LucideIcons } from "@/constants/icons";
 import { View } from "react-native";
 

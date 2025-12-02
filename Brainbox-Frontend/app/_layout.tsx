@@ -1,18 +1,11 @@
-
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { LogBox } from "react-native";
+import React from "react";
 import "react-native-reanimated";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "../global.css";
-import SplashScreenv2 from "./splash-screenv2";
-
-
-LogBox.ignoreLogs(["Clerk:"]);
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -25,44 +18,21 @@ export default function RootLayout() {
     "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
 
-  const [showCustomSplash, setShowCustomSplash] = useState(true);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  useEffect(() => {
-    // Hide custom splash after 3 seconds (matching animation duration)
-    if (loaded) {
-      const timer = setTimeout(() => {
-        setShowCustomSplash(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [loaded]);
-
-  if (!loaded || showCustomSplash) {
-    return <SplashScreenv2 />;
+  if (!loaded) {
+    return null;
   }
 
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-    
-         
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="screens" />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="auto" />
-       
-
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          {/* <Stack.Screen name="screens" /> */}
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
       </GestureHandlerRootView>
     </>
   );

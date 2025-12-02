@@ -1,12 +1,24 @@
-import { Redirect, useRouter } from "expo-router";
+import { Redirect } from "expo-router";
+import { useEffect, useState } from "react";
 
-const Page = () => {
+export default function Index() {
+  // Check if user has seen onboarding or is authenticated
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Replace with your actual logic (AsyncStorage, etc.)
+  useEffect(() => {
+    // Check if user has completed onboarding
+    // Check if user is authenticated
+  }, []);
 
-    return (
-        <Redirect href="/(auth)" />
-    );
- 
-};
+  if (isFirstLaunch) {
+    return <Redirect href="/(auth)/onboarding" />;
+  }
 
-export default Page;
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
+
+  return <Redirect href="/(auth)/onboarding" />;
+}
