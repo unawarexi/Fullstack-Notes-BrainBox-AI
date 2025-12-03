@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import Animated, { FadeInDown, FadeInUp, FadeIn, SlideInRight } from "react-native-reanimated";
 import { Heart, MoreVertical, Scissors, Copy, ClipboardList, ShareIcon, Mic } from "lucide-react-native";
 import { images } from "@/constants/image-strings";
+import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,7 +25,8 @@ const Onboarding = () => {
       });
     } else {
       // Navigate to main app
-      console.log("Get Started!");
+      router.replace("/(auth)/welcome")
+      
     }
   };
 
