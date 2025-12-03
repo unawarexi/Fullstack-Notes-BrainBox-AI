@@ -9,7 +9,8 @@ dotenv.config();
 
 // Import routes
 
-import { disconnectPrisma } from "@/lib/prisma";
+import { disconnectPrisma } from "@config/lib/prisma.js";
+
 
 
 // Create Express app
