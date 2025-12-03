@@ -35,6 +35,11 @@ import {
   X,
   Grid2x2,
   History,
+  FileText,
+  Plus,
+  FlameIcon as Fire,
+  Lightbulb,
+  CircleQuestionMark,
 } from "lucide-react-native";
 
 export const LucideIcons = {
@@ -74,4 +79,9 @@ export const LucideIcons = {
   Calendar,
   AlertTriangle,
   Info,
+  FileText,
+  Plus,
+  Fire,
+  Lightbulb,
+  CircleQuestionMark,
 };
