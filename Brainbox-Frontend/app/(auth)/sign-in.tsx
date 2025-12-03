@@ -43,7 +43,7 @@ const SignIn = () => {
         </TouchableOpacity>
 
         {/* Login Button */}
-        <TouchableOpacity className="bg-gray-900 rounded-2xl py-4 mb-10 border-4 ">
+        <TouchableOpacity onPress={() => {router.dismissAll(); router.replace("/(tabs)")}} className="bg-gray-900 rounded-2xl py-4 mb-10 border-4 ">
           <Text className="text-white text-center text-lg font-semibold">Login</Text>
         </TouchableOpacity>
 
