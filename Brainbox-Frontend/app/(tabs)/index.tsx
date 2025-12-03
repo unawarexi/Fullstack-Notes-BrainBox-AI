@@ -1,12 +1,15 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, Platform } from "react-native";
 import React, { useState } from "react";
-import { Menu, Search, Plus } from "lucide-react-native";
+import { Menu } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants/image-strings";
 import { router } from "expo-router";
+import SearchInput from "@/components/Search-Input";
+import Fab from "@/components/Fab";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const isIOS = Platform.OS === "ios";
 
   const suggestions = ["Write your journal", "Are you confused? Write what's on your mind while I help arrange it", "Need to brainstorm ideas? Let's organize your thoughts", "Capture your daily reflections here", "Document your creative process with AI assistance"];
 
@@ -19,11 +22,8 @@ const Index = () => {
           <Menu size={16} color="#000" />
         </TouchableOpacity>
 
-        {/* Search Bar */}
-        <View className="flex-row items-center bg-white rounded-2xl px-4 py-1 shadow-md  mb-6 border-[1px] border-gray-200">
-          <Search size={20} color="#999" />
-          <TextInput className="flex-1 ml-3 text-base text-gray-900" placeholder="Search notes..." value={searchQuery} onChangeText={setSearchQuery} placeholderTextColor="#999" />
-        </View>
+        {/* Search Bar (moved to reusable component) */}
+        <SearchInput value={searchQuery} onChangeText={setSearchQuery} />
       </View>
 
       {/* Main Content */}
@@ -59,12 +59,8 @@ const Index = () => {
         </View>
       </ScrollView>
 
-      {/* Floating Action Button */}
-      <View className="absolute bottom-24 right-6">
-        <TouchableOpacity onPress={() => router.push("/screens/notes-screen")} className="w-14 h-14 bg-gray-900 rounded-full items-center justify-center shadow-lg" activeOpacity={0.8}>
-          <Plus size={20} color="#fff" strokeWidth={2.5} />
-        </TouchableOpacity>
-      </View>
+      {/* Floating Action Button (moved to reusable component) */}
+      <Fab onPress={() => router.push("/screens/notes-screen")} />
     </SafeAreaView>
   );
 };
