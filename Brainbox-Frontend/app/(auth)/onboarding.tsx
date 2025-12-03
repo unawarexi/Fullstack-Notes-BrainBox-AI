@@ -1,164 +1,773 @@
-import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
-import { Animated, Image, Text, TouchableOpacity, View, Dimensions } from "react-native";
-import Swiper from "react-native-swiper";
-import { onboarding } from "@/constants/texts";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, Pressable, Image } from "react-native";
+import React, { useState, useRef } from "react";
+import Animated, { FadeInDown, FadeInUp, FadeIn, SlideInRight } from "react-native-reanimated";
+import { Heart, MoreVertical, Scissors, Copy, ClipboardList, ShareIcon, Mic } from "lucide-react-native";
+import { images } from "@/constants/image-strings";
+
+const { width, height } = Dimensions.get("window");
 
 const Onboarding = () => {
-  const swiperRef = useRef<Swiper>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const router = useRouter();
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-  const IMAGE_HEIGHT = SCREEN_HEIGHT * 0.6;
+  const handleScroll = (event: any) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / width);
+    setCurrentIndex(index);
+  };
 
-  const isLastSlide = activeIndex === onboarding.length - 1;
-
-  const handleIndexChanged = (index: number) => {
-    setActiveIndex(index);
-
-    Animated.sequence([
-      Animated.timing(fadeAnim, {
-        toValue: 0.7,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
+  const goToNext = () => {
+    if (currentIndex < 2) {
+      scrollViewRef.current?.scrollTo({
+        x: width * (currentIndex + 1),
+        animated: true,
+      });
+    } else {
+      // Navigate to main app
+      console.log("Get Started!");
+    }
   };
 
   return (
-    <View className="flex-1 bg-[#E8EDF2]">
-      {/* Swiper - Only for content that slides */}
-      <View className="flex-1 mt-20">
-        <Swiper ref={swiperRef} loop={false} showsPagination={false} onIndexChanged={handleIndexChanged} containerStyle={{ flex: 1 }}>
-          {onboarding.map((item) => (
-            <View key={item.id} className="flex-1">
-              <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-                {/* Full Image - 60% of screen */}
-                <View
-                  style={{
-                    height: IMAGE_HEIGHT,
-                    width: "100%",
-                    overflow: "hidden",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    source={item.image}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    resizeMode="cover"
-                  />
-                </View>
-                {/* Pagination Dots - Modern style */}
-                <View className="flex-row justify-center items-center">
-                  {onboarding.map((_, index) => (
-                    <Animated.View
-                      key={index}
-                      style={{
-                        width: index === activeIndex ? 24 : 8,
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor: index === activeIndex ? "#1e293b" : "#cbd5e1",
-                        marginHorizontal: 4,
-                      }}
-                    />
-                  ))}
-                </View>
+    <View style={styles.container}>
+      <ScrollView ref={scrollViewRef} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={handleScroll} scrollEventThrottle={16} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        {/* Slide 1 - Black Background */}
+        <View style={[styles.slide, { width, backgroundColor: "#141718" }]}>
+          <View style={styles.slideContent}>
+            {/* Header with dots menu */}
+            <View style={styles.header}>
+              <TouchableOpacity style={styles.dotsMenu}>
+                <MoreVertical color="#fff" size={24} />
+              </TouchableOpacity>
+            </View>
 
-                {/* Gradient Overlay - fades from bottom up */}
-                <LinearGradient
-                  colors={["transparent", "rgba(232,237,242,0.5)", "#E8EDF2"]}
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: SCREEN_HEIGHT * 0.45,
-                  }}
-                  pointerEvents="none"
-                />
+            {/* Title */}
+            <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleWhite}>
+              My{"\n"}Notes
+            </Animated.Text>
 
-                {/* Title & Description - Inside swipeable area */}
-                <View className="flex-1 justify-start px-8 pt-12">
-                  <View className="items-center">
-                    <Text className="text-gray-900 text-2xl font-JakartaBold text-center mb-3 leading-snug">{item.title}</Text>
+            {/* Filter Pills */}
+            <Animated.View entering={FadeInUp.delay(200)} style={styles.filterContainer}>
+              <View style={styles.filterPillActive}>
+                <Text style={styles.filterTextActive}>All</Text>
+                <Text style={styles.filterCount}>23</Text>
+              </View>
+              <View style={styles.filterPill}>
+                <Text style={styles.filterText}>Important</Text>
+              </View>
+              <View style={styles.filterPill}>
+                <Text style={styles.filterText}>To-do</Text>
+              </View>
+            </Animated.View>
 
-                    <Text className="text-gray-500 text-sm font-JakartaMedium text-center leading-relaxed">{item.description}</Text>
+            {/* Note Cards Grid */}
+            <Animated.View entering={FadeInUp.delay(300)} style={styles.gridContainer}>
+              {/* Row 1 */}
+              <View style={styles.gridRow}>
+                {/* Card 1 - Coral */}
+                <View style={[styles.noteCard, { backgroundColor: "#f4a292" }]}>
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Plan for{"\n"}The Day</Text>
+                    <Heart color="#000" size={20} fill="transparent" />
+                  </View>
+                  <View style={styles.todoList}>
+                    <View style={styles.todoItem}>
+                      <View style={styles.checkboxChecked}>
+                        <Text style={styles.checkmark}>✓</Text>
+                      </View>
+                      <Text style={styles.todoTextStrike}>Buy food</Text>
+                    </View>
+                    <View style={styles.todoItem}>
+                      <View style={styles.checkbox} />
+                      <Text style={styles.todoText}>GYM</Text>
+                    </View>
+                    <View style={styles.todoItem}>
+                      <View style={styles.checkbox} />
+                      <Text style={styles.todoText}>Invest</Text>
+                    </View>
                   </View>
                 </View>
-              </Animated.View>
-            </View>
-          ))}
-        </Swiper>
-      </View>
 
-      {/* Fixed Bottom Controls - Outside swiper, never moves */}
-      <View className="absolute bottom-0 left-0 right-0 pb-10 px-8 bg-transparent">
-        <View className="flex-row items-center gap-10">
-          {/* Left Side - Empty spacer for balance */}
-          <View className="w-20" />
+                {/* Card 2 - Yellow */}
+                <View style={[styles.noteCard, { backgroundColor: "#f4c542" }]}>
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Image{"\n"}Notes</Text>
+                    <Heart color="#000" size={20} fill="transparent" />
+                  </View>
+                  <Text style={styles.updateText}>update 2hr ago</Text>
+                  <View style={styles.imagePlaceholder}>
+                    <Image source={images.girl} className="w-32 h-24 object-cover" />
+                    {/* <Text style={styles.imagePlaceholderEmoji}>😊</Text> */}
+                  </View>
+                </View>
+              </View>
 
-          {/* Center - Navigation Buttons */}
-          <View className="flex-row items-center" style={{ gap: 16 }}>
-            {/* Back Button or Spacer */}
-            {activeIndex > 0 ? (
-              <TouchableOpacity
-                onPress={() => swiperRef.current?.scrollBy(-1)}
-                className="w-14 h-14 bg-white rounded-full items-center justify-center shadow-sm"
-                style={{
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
-                }}
-              >
-                <Text className="text-gray-900 text-xl">←</Text>
+              {/* Row 2 */}
+              <View style={styles.gridRow}>
+                {/* Card 3 - Cream */}
+                <View style={[styles.noteCard, { backgroundColor: "#f5f1e3" }]}>
+                  <View style={styles.cardHeaderSmall}>
+                    <Text style={styles.emojiIcon}>😊</Text>
+                    <Text style={styles.noteCount}>5 Notes</Text>
+                    <Heart color="#000" size={18} fill="transparent" />
+                  </View>
+                  <Text style={styles.cardTitleSmall}>My Lectures</Text>
+                </View>
+
+                {/* Card 4 - Light Blue */}
+                <View style={[styles.noteCard, { backgroundColor: "#b4c5e0" }]}>
+                  <View style={styles.cardHeaderSmall}>
+                    <Text style={styles.noteCount}>3 Notes</Text>
+                    <Heart color="#000" size={18} fill="transparent" />
+                  </View>
+                  <Text style={styles.cardTitleSmall}>image{"\n"}Funny</Text>
+                </View>
+              </View>
+
+              {/* Card 5 - Light Green */}
+              <View style={[styles.noteCard, styles.noteCardWide, { backgroundColor: "#b8d8a5" }]}>
+                <View style={styles.cardHeaderSmall}>
+                  <Text style={styles.cardTitleSmall}>List of{"\n"}Something</Text>
+                  <Heart color="#000" size={18} fill="transparent" />
+                </View>
+              </View>
+            </Animated.View>
+
+            {/* Floating Action Buttons */}
+            <View style={styles.fabContainer}>
+              <TouchableOpacity style={styles.fab}>
+                <Text style={styles.fabText}>+</Text>
               </TouchableOpacity>
-            ) : (
-              <View className="w-14" />
-            )}
-
-            {/* Next/Get Started Button */}
-            <TouchableOpacity
-              onPress={() => (isLastSlide ? router.replace("/(auth)/welcome") : swiperRef.current?.scrollBy(1))}
-              className="w-14 h-14 bg-gray-900 rounded-full items-center justify-center"
-              style={{
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.2,
-                shadowRadius: 6,
-                elevation: 5,
-              }}
-            >
-              <Text className="text-white text-xl font-bold">{isLastSlide ? "✓" : "→"}</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.fabMic}>
+                <Mic size={24} />
+              </TouchableOpacity>
+            </View>
           </View>
-
-          {/* Right Side - Skip Button */}
-          <TouchableOpacity
-            onPress={() => router.replace("/(auth)/welcome")}
-            className="pl-20"
-            style={{
-              elevation: 4,
-            }}
-          >
-            <Text style={{ color: "#374151", fontSize: 16, fontFamily: "JakartaMedium" }}>Skip</Text>
-          </TouchableOpacity>
         </View>
+
+        {/* Slide 2 - Cream Background */}
+        <View style={[styles.slide, { width, backgroundColor: "#f5f1e3" }]}>
+          <View style={styles.slideContent}>
+            {/* Header */}
+            <View style={styles.headerCream}>
+              <TouchableOpacity style={styles.backButton}>
+                <Text style={styles.backArrow}>‹</Text>
+              </TouchableOpacity>
+              <Text style={styles.sharedText}>Shared to</Text>
+              <View style={styles.avatarGroup}>
+                <Image source={{ uri: "https://cdn.pixabay.com/photo/2025/11/19/11/09/rabbit-9965274_1280.jpg" }} style={[styles.avatar, styles.avatarImage]} />
+                <Image source={{ uri: "https://cdn.pixabay.com/photo/2025/12/01/07/46/autumn-9987500_1280.jpg" }} style={[styles.avatar, styles.avatarImage, styles.avatarRed]} />
+              </View>
+              <TouchableOpacity>
+                <View style={styles.iconCircle}>
+                  <ShareIcon color="#000" size={20} />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Title */}
+            <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleBlack}>
+              Design{"\n"}Sprint{"\n"}Lecture
+            </Animated.Text>
+
+            {/* Description */}
+            <Animated.Text entering={FadeInUp.delay(200)} style={styles.descriptionBlack}>
+              Design Sprint is a way to quickly ideate, prototype, and validate a product idea in a week instead of waiting for months to lunch a full-fledged product
+            </Animated.Text>
+
+            {/* Tap to continue */}
+            <View style={styles.tapHint}>
+              <View style={styles.tapLine} />
+              <Text style={styles.tapText}>Tap here to continue</Text>
+            </View>
+
+            {/* Bottom Actions */}
+            <View style={styles.bottomActions}>
+              <TouchableOpacity style={styles.actionButton}>
+                <Text style={styles.actionButtonText}>+</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionIcon}>
+                <Text>🎵</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionIcon}>
+                <Text>✏️</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionIcon}>
+                <Text>☰</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Design Sprint Phases */}
+            <Text style={styles.phasesTitle}>Design Sprint Phases:</Text>
+            <View style={styles.phasesContainer}>
+              <View style={styles.phaseItem}>
+                <Text style={styles.phaseText}>Empathize</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* ------------------------------------Slide 3 - Cream & Black Split */}
+        <View style={[styles.slide, { width, backgroundColor: "#f5f1e3" }]}>
+          <View style={styles.slideContent}>
+            {/* Header (Reminder about for slide 3) */}
+            <View style={styles.headerCream}>
+              <TouchableOpacity style={styles.backButton}>
+                <Text style={styles.backArrow}>‹</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.sharedText}>Reminder about</Text>
+              <View style={styles.avatarGroup}>
+                <Image source={{ uri: "https://cdn.pixabay.com/photo/2024/08/23/14/25/ai-generated-8991952_1280.jpg" }} style={[styles.avatar, styles.avatarImage]} />
+                <Image source={{ uri: "https://cdn.pixabay.com/photo/2022/01/07/19/06/executive-6922418_1280.jpg" }} style={[styles.avatar, styles.avatarImage, styles.avatarRed]} />
+              </View>
+
+              <TouchableOpacity>
+                <Text style={styles.emailText}>...@gmail.com</Text>
+                <Text style={styles.emailText}>...@business.org</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Title for Notes AI Brainbox */}
+            <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleBlack}>
+              Notes AI{"\n"}Brainbox
+            </Animated.Text>
+
+            {/* New description/write-up for Notes AI Brainbox */}
+            <Animated.Text entering={FadeInUp.delay(200)} style={styles.descriptionBlack}>
+              Notes AI Brainbox summarizes, tags and organizes your notes automatically — extract action items, generate insights and search across ideas with AI-powered context.
+            </Animated.Text>
+
+            {/* Action Icons (keep cut, copy, paste) */}
+            <View style={styles.actionIcons}>
+              <View style={styles.iconCircle}>
+                <Scissors color="#000" size={20} />
+              </View>
+              <View style={styles.iconCircle}>
+                <Copy color="#000" size={20} />
+              </View>
+              <View style={styles.iconCircle}>
+                <ClipboardList color="#000" size={20} />
+              </View>
+            </View>
+
+            {/* Highlight / note example */}
+            <View style={styles.highlightedBox}>
+              <Text style={styles.highlightedText}>AI-generated highlights appear here — quick summaries, suggested tags, and follow-up tasks so you can focus on building.</Text>
+            </View>
+
+            {/* spacer so content sits above the FAB / Start button */}
+            <View style={{ height: 20 }} />
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Pagination Dots */}
+      <View style={styles.pagination}>
+        {[0, 1, 2].map((index) => (
+          <View key={index} style={[styles.paginationDot, index === currentIndex && styles.paginationDotActive]} />
+        ))}
       </View>
+
+      {/* Next Button */}
+      <TouchableOpacity style={styles.nextButton} onPress={goToNext}>
+        <Text style={styles.nextButtonText}>{currentIndex === 2 ? "Start" : "›"}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  slide: {
+    minHeight: height,
+  },
+  slideContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
+  },
+
+  // Slide 1 Styles
+  header: {
+    alignItems: "flex-end",
+    marginBottom: 20,
+  },
+  dotsMenu: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleWhite: {
+    fontSize: 72,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 30,
+    lineHeight: 80,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    marginBottom: 30,
+    gap: 10,
+  },
+  filterPillActive: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: "center",
+    gap: 8,
+  },
+  filterPill: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  filterTextActive: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  filterText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  filterCount: {
+    color: "#666",
+    fontSize: 14,
+  },
+  gridContainer: {
+    flex: 1,
+    gap: 12,
+  },
+  gridRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  noteCard: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 16,
+    minHeight: 160,
+  },
+  noteCardWide: {
+    width: "100%",
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  cardHeaderSmall: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#000",
+    lineHeight: 24,
+  },
+  cardTitleSmall: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000",
+    lineHeight: 22,
+  },
+  emojiIcon: {
+    fontSize: 24,
+  },
+  noteCount: {
+    fontSize: 12,
+    color: "#666",
+  },
+  updateText: {
+    fontSize: 11,
+    color: "#666",
+    marginBottom: 8,
+  },
+  todoList: {
+    gap: 8,
+  },
+  todoItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#000",
+  },
+  checkboxChecked: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkmark: {
+    color: "#fff",
+    fontSize: 12,
+  },
+  todoText: {
+    fontSize: 16,
+    color: "#000",
+  },
+  todoTextStrike: {
+    fontSize: 16,
+    color: "#666",
+    textDecorationLine: "line-through",
+  },
+  imagePlaceholder: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imagePlaceholderEmoji: {
+    fontSize: 48,
+  },
+  fabContainer: {
+    position: "absolute",
+    bottom: 40,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 15,
+  },
+  fab: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fabMic: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fabText: {
+    color: "#fff",
+    fontSize: 28,
+    fontWeight: "300",
+  },
+
+  // Slide 2 Styles
+  headerCream: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 30,
+    gap: 12,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backArrow: {
+    fontSize: 32,
+    color: "#000",
+    fontWeight: "300",
+  },
+  sharedText: {
+    fontSize: 14,
+    color: "#666",
+  },
+  avatarGroup: {
+    flexDirection: "row",
+    marginLeft: -5,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#999",
+    marginLeft: -8,
+    borderWidth: 2,
+    borderColor: "#f5f1e3",
+  },
+  avatarRed: {
+    backgroundColor: "#ff4444",
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginLeft: -10,
+    borderWidth: 2,
+    borderColor: "#f5f1e3",
+  },
+  shareIcon: {
+    fontSize: 24,
+    marginLeft: "auto",
+  },
+  titleBlack: {
+    fontSize: 64,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 30,
+    lineHeight: 70,
+  },
+  descriptionBlack: {
+    fontSize: 16,
+    color: "#000",
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  tapHint: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    gap: 10,
+  },
+  tapLine: {
+    height: 2,
+    width: 40,
+    backgroundColor: "#000",
+  },
+  tapText: {
+    fontSize: 14,
+    color: "#999",
+  },
+  bottomActions: {
+    flexDirection: "row",
+    marginTop: 30,
+    gap: 15,
+  },
+  actionButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  actionButtonText: {
+    color: "#fff",
+    fontSize: 28,
+    fontWeight: "300",
+  },
+  actionIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  phasesTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+    marginTop: 30,
+    marginBottom: 15,
+  },
+  phasesContainer: {
+    flexDirection: "row",
+  },
+  phaseItem: {
+    borderWidth: 1,
+    borderColor: "#999",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  phaseText: {
+    fontSize: 16,
+    color: "#000",
+  },
+
+  // Slide 3 Styles
+  blurredSection: {
+    marginBottom: 20,
+    opacity: 0.3,
+  },
+  blurredText: {
+    fontSize: 16,
+    color: "#000",
+    lineHeight: 24,
+  },
+  actionIcons: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 20,
+  },
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  iconCircleFull: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(0,0,0,0.03)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+    padding: 4,
+  },
+  iconEmoji: {
+    fontSize: 20,
+  },
+  emailText: {
+    fontSize: 10,
+    color: "#666",
+    marginTop: 4,
+  },
+  highlightedBox: { backgroundColor: "#fef08a", padding: 20, borderRadius: 12, marginBottom: 20, position: "relative", borderColor: "#fef08a", borderWidth: 2, opacity: 0.9 },
+
+  highlightedText: {
+    fontSize: 16,
+    color: "#000",
+    lineHeight: 24,
+    fontWeight: "500",
+  },
+  cursor: {
+    width: 2,
+    height: 20,
+    backgroundColor: "#000",
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+  },
+  keyboardSection: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 24,
+    padding: 16,
+    marginTop: "auto",
+    marginBottom: 40,
+  },
+  keyboardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  keyboardAa: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  keyboardControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  controlCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  fontSize: {
+    color: "#fff",
+    fontSize: 14,
+  },
+  fontSizeBold: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  keyboardRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 4,
+    marginBottom: 8,
+  },
+  keyboardRowBottom: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 4,
+  },
+  key: {
+    width: 32,
+    height: 40,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  keyWide: {
+    flex: 1,
+    height: 40,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  keyText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+
+  // Pagination & Navigation
+  pagination: {
+    position: "absolute",
+    bottom: 120,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  paginationDotActive: {
+    width: 24,
+    backgroundColor: "#000",
+  },
+  nextButton: {
+    position: "absolute",
+    bottom: 32,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 48,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 6,
+    paddingHorizontal: 8,
+  },
+  nextButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+});
 
 export default Onboarding;

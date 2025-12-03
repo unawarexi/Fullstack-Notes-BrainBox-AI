@@ -7,6 +7,10 @@ import onboarding3 from "@/assets/images/onboarding3.png";
 import logo from "@/assets/logo/Logo.png";
 import logo2 from "@/assets/logo/Logo-dark.png";
 
+import linkedin from "@/assets/images/linkedin-icon.svg";
+import gmail from "@/assets/images/official-gmail-icon-2020-.svg";
+import girl from "@/assets/images/young-girl-3973379_1280.png";
+
 
 export const images = {
   onboarding1,
@@ -15,5 +19,9 @@ export const images = {
 
   logo,
   logo2,
+
+  linkedin,
+  gmail,
+  girl
 
 };
