@@ -65,6 +65,7 @@ export default function TabLayout() {
           left: 0,
           right: 0,
           borderTopWidth: 2,
+          backgroundColor: "#F8FAFC",
           borderTopColor: "#e2e8f0",
           height: Platform.OS === "ios" ? 90 : 70,
           paddingBottom: Platform.OS === "ios" ? 30 : 15,
@@ -92,6 +93,13 @@ export default function TabLayout() {
         options={{
           title: "Explore",
           tabBarIcon: ({ focused }) => <TabIcon Icon={LucideIcons.Grid2x2} focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: "Brainy",
+          tabBarIcon: ({ focused }) => <TabIcon Icon={LucideIcons.Brain} focused={focused} />,
         }}
       />
       <Tabs.Screen
