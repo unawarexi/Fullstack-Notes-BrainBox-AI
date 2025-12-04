@@ -4,7 +4,7 @@ const Layout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="notes-screen" />
-      
+      <Stack.Screen name="aichat-history" />
     </Stack>
   );
 };

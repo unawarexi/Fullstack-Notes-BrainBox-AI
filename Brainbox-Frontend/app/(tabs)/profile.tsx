@@ -70,7 +70,7 @@ const ProfileScreen = () => {
     const IconComponent = item.icon;
     return (
       <Animated.View entering={FadeInRight.delay(index * 50).duration(500)}>
-        <TouchableOpacity className="flex-row items-center py-4 border-b border-gray-100" activeOpacity={0.7}>
+        <TouchableOpacity className="flex-row items-center py-4 border-t border-gray-50 border-dotted" activeOpacity={0.7}>
           <View className="w-10 h-10 bg-gray-50 rounded-full items-center justify-center">
             <IconComponent size={20} color="#000" />
           </View>
@@ -82,12 +82,12 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-slate-50">
       <StatusBar barStyle="dark-content" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: Platform.OS === "ios" ? 180 : 140 }}>
         {/* Left Section - Apps & Connections */}
-        <View className={`bg-white ${isIOS ? 'pt-2' : 'pt-14'} px-6`}>
+        <View className={`bg-slate-50 ${isIOS ? "pt-2" : "pt-14"} px-6 pb-6`}>
           {/* Header */}
           <Animated.View entering={FadeInDown.duration(500)} className="flex-row items-center justify-between mb-6">
             <BackButton />
@@ -106,8 +106,8 @@ const ProfileScreen = () => {
           </Animated.View>
 
           {/* Social Profiles Section */}
-          <Animated.View entering={FadeInDown.delay(200).duration(500)} className="mb-6">
-            <View className="bg-slate-50 rounded-2xl p-5 mb-4">
+          <Animated.View entering={FadeInDown.delay(200).duration(500)} className="mb-6 ">
+            <View className="bg-gray-200 rounded-2xl p-5 mb-4">
               <Text className="text-xl font-bold text-gray-900 mb-4">Social profiles</Text>
               {socialProfiles.map((item, index) => (
                 <SocialProfileCard key={item.id} item={item} index={index} />
@@ -123,7 +123,7 @@ const ProfileScreen = () => {
 
           {/* Apps Section */}
           <Animated.View entering={FadeInDown.delay(300).duration(500)}>
-            <View className="bg-slate-50 rounded-2xl p-5">
+            <View className="bg-gray-200  rounded-2xl p-5">
               <Text className="text-xl font-bold text-gray-900 mb-4">Apps</Text>
               {connectedApps.map((item, index) => (
                 <AppCard key={item.id} item={item} index={index} />
@@ -139,7 +139,7 @@ const ProfileScreen = () => {
         </View>
 
         {/* Right Section - Settings */}
-        <View className="bg-white p-6">
+        <View className="bg-slate-50 p-6">
           {/* Settings Header */}
           <Animated.View entering={FadeInDown.duration(500)} className="flex-row items-center mb-6">
             <BackButton />
@@ -148,7 +148,7 @@ const ProfileScreen = () => {
 
           {/* Search Bar */}
           <Animated.View entering={FadeInDown.delay(100).duration(500)} className="mb-6">
-            <View className={`bg-slate-50 rounded-2xl px-4 ${isIOS ? "py-4 " : "py-1"} flex-row items-center focus:border-gray-300 focus:border-2 focus:bg-white`}>
+            <View className={`bg-slate-50 border-[1px] border-slate-300 rounded-2xl px-4 ${isIOS ? "py-4 " : "py-1"} flex-row items-center focus:border-gray-300 focus:border-2 focus:bg-white`}>
               <Search size={20} color="#9CA3AF" />
               <TextInput className="flex-1 ml-3 text-gray-900 text-base" placeholder="Type to search" placeholderTextColor="#9CA3AF" value={searchQuery} onChangeText={setSearchQuery} />
             </View>
@@ -158,7 +158,7 @@ const ProfileScreen = () => {
           <Animated.View entering={FadeInDown.delay(200).duration(500)} className="mb-6">
             <Text className="text-2xl font-bold text-gray-900 mb-2">Account</Text>
             <Text className="text-gray-500 text-sm mb-4">Update your info to keep your account</Text>
-            <View className="bg-slate-50 rounded-2xl px-5 py-2">
+            <View className="bg-gray-200 rounded-2xl px-5 py-2">
               {accountSettings.map((item, index) => (
                 <SettingsItem key={item.id} item={item} index={index} />
               ))}
@@ -169,7 +169,7 @@ const ProfileScreen = () => {
           <Animated.View entering={FadeInDown.delay(300).duration(500)}>
             <Text className="text-2xl font-bold text-gray-900 mb-2">Privacy</Text>
             <Text className="text-gray-500 text-sm mb-4">Customize your privacy to make experience better</Text>
-            <View className="bg-slate-50 rounded-2xl px-5 py-2">
+            <View className="bg-gray-200  rounded-2xl px-5 py-2">
               {privacySettings.map((item, index) => (
                 <SettingsItem key={item.id} item={item} index={index} />
               ))}

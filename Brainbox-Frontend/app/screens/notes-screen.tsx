@@ -11,6 +11,7 @@ const NotesScreen = () => {
   const [content, setContent] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
+  const isIos = Platform.OS === "ios";
 
   // refs & keyboard handling
   const scrollRef = useRef<ScrollView | null>(null);
@@ -84,9 +85,9 @@ const NotesScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-white">
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 bg-slate-50">
       {/* App Bar */}
-      <View className={`${Platform.OS === "ios" ? "pt-20" : "pt-14"} px-4 pb-4 bg-white border-b border-gray-100`}>
+      <View className={`${Platform.OS === "ios" ? "pt-20" : "pt-14"} px-4 pb-4 border-b border-slate-200`}>
         <View className="flex-row items-center justify-between">
           {/* Left: Back Button and Title */}
           <View className="flex-row items-center flex-1">
@@ -154,20 +155,20 @@ const NotesScreen = () => {
       </ScrollView>
 
       {/* Bottom Toolbar */}
-      <View className="px-6 py-2 bg-white border-t border-gray-100">
+      <View className={`px-6 ${isIos ? 'py-2' : 'py-0'} border-t border-slate-200`}>
         <View className="flex-row items-center justify-between px-6 py-4">
           {/* Left Side: Mic and AI Assist */}
           <View className="flex-row items-center gap-3">
             {/* Voice Input Button */}
             <TouchableOpacity
-              className="w-12 h-12 bg-gray-900 rounded-full items-center justify-center shadow-sm"
+              className="w-8 h-8 bg-gray-900 rounded-full items-center justify-center shadow-sm"
               activeOpacity={0.8}
               onPress={() => {
                 Keyboard.dismiss();
                 // existing voice action can go here
               }}
             >
-              <Mic size={20} color="#fff" />
+              <Mic size={16} color="#fff" />
             </TouchableOpacity>
 
             {/* AI Assist Button */}
@@ -179,14 +180,14 @@ const NotesScreen = () => {
               }}
               activeOpacity={0.7}
             >
-              <Sparkles size={18} color="#8B5CF6" />
+              <Sparkles size={14} color="#8B5CF6" />
               <Text className="text-sm font-medium text-gray-700">AI Assist</Text>
             </TouchableOpacity>
           </View>
 
           {/* Right Side: More Options Button */}
           <TouchableOpacity
-            className="w-10 h-10 items-center justify-center bg-gray-100 rounded-xl"
+            className="w-8 h-8 items-center justify-center bg-gray-200 rounded-xl"
             activeOpacity={0.7}
             onPress={() => {
               Keyboard.dismiss();

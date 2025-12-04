@@ -72,7 +72,7 @@ const ReminderHistoryScreen = () => {
   });
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-slate-50">
       <StatusBar barStyle="dark-content" />
 
       {/* Fixed App Bar (stays visible) */}
@@ -96,12 +96,14 @@ const ReminderHistoryScreen = () => {
       >
         {/* Reserve space and animate the large date block */}
         <View style={{ height: COLLAPSIBLE_HEIGHT, overflow: "hidden" }}>
-          <Animated.View style={[{ paddingBottom: 8 }, collapsibleStyle]} entering={FadeInDown.duration(500)}>
-            <View className="mb-2">
-              <Text className="text-6xl font-bold text-gray-900">06</Text>
-              <Text className="text-lg text-gray-600 font-medium">February, 2023</Text>
-              <Text className="text-base text-gray-500">Monday</Text>
-            </View>
+          <Animated.View entering={FadeInDown.duration(500)}>
+            <Animated.View style={[{ paddingBottom: 8 }, collapsibleStyle]}>
+              <View className="mb-2">
+                <Text className="text-6xl font-bold text-gray-900">06</Text>
+                <Text className="text-lg text-gray-600 font-medium">February, 2023</Text>
+                <Text className="text-base text-gray-500">Monday</Text>
+              </View>
+            </Animated.View>
           </Animated.View>
         </View>
 
@@ -123,7 +125,7 @@ const ReminderHistoryScreen = () => {
         </Animated.View>
 
         {/* Today's Reminders */}
-        <Animated.View entering={FadeInDown.delay(600).duration(500)} className="bg-gray-50 rounded-3xl p-5 mb-6">
+        <Animated.View entering={FadeInDown.delay(600).duration(500)} className="bg-slate-200 rounded-3xl p-5 mb-6">
           <View className="flex-row items-center justify-between mb-4">
             <View>
               <Text className="text-xl font-bold text-gray-900">About Today</Text>
@@ -148,7 +150,7 @@ const ReminderHistoryScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <View className="bg-gray-50 rounded-2xl p-4">
+          <View className="bg-slate-100 rounded-2xl p-4">
             <View className="flex-row items-center">
               <Clock size={20} color="#6B7280" />
               <Text className="text-gray-600 ml-3 flex-1">No recent contacts</Text>
@@ -166,7 +168,7 @@ const ReminderHistoryScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 border border-gray-200" activeOpacity={0.7}>
+          <TouchableOpacity className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 border border-slate-200" activeOpacity={0.7}>
             <View className="flex-row items-center">
               <View className="bg-white rounded-full w-10 h-10 items-center justify-center">
                 <Bookmark size={20} color="#6366F1" />

@@ -14,12 +14,12 @@ const Index = () => {
   const suggestions = ["Write your journal", "Are you confused? Write what's on your mind while I help arrange it", "Need to brainstorm ideas? Let's organize your thoughts", "Capture your daily reflections here", "Document your creative process with AI assistance"];
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-slate-50">
       {/* Header Section */}
       <View className="pt-4 px-6">
         {/* Hamburger Menu */}
-        <TouchableOpacity className="w-12 h-12 bg-white rounded-full border-[1px] border-gray-200 items-center justify-center mb-4 shadow-md">
-          <Menu size={16} color="#000" />
+        <TouchableOpacity className="w-12 h-12 bg-black rounded-full border-[1px] border-gray-200 items-center justify-center mb-4 shadow-md">
+          <Menu size={16} color="#fff" />
         </TouchableOpacity>
 
         {/* Search Bar (moved to reusable component) */}
@@ -52,7 +52,7 @@ const Index = () => {
         {/* Suggestions Section */}
         <View className="mt-4">
           {suggestions.map((suggestion, index) => (
-            <TouchableOpacity key={index} className="bg-gray-100 rounded-2xl px-5 py-4 mb-3 opacity-60" activeOpacity={0.7}>
+            <TouchableOpacity key={index} className="bg-slate-200 rounded-2xl px-5 py-4 mb-3 opacity-60" activeOpacity={0.7}>
               <Text className="text-gray-600 text-sm leading-5">{suggestion}</Text>
             </TouchableOpacity>
           ))}

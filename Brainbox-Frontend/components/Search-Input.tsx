@@ -12,7 +12,7 @@ const SearchInput: React.FC<Props> = ({ value, onChangeText, placeholder = "Sear
   const isIOS = Platform.OS === "ios";
 
   return (
-    <View className={`flex-row items-center bg-white rounded-2xl px-4 ${isIOS ? "py-4" : "py-1"} shadow-md mb-6 border-[1px] border-gray-200`}>
+    <View className={`flex-row items-center rounded-2xl px-4 ${isIOS ? "py-4" : "py-1"} mb-6 border-[1px] border-slate-300 focus:bg-white focus:border-gray-300 focus:border-2 focus:shadow-md `}>
       <Search size={20} color="#999" />
       <TextInput
         className="flex-1 ml-3 text-base text-gray-900"

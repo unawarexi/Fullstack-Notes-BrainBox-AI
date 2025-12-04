@@ -175,7 +175,7 @@ const ExploreScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-slate-50">
       {/* App Bar */}
       <View className={`px-4 py-4 flex-row justify-between items-center border-b border-gray-100 ${isIOS ? '' : 'pt-14'}`}>
         <View className="flex-row items-center gap-3">

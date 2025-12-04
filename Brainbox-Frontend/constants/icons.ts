@@ -40,6 +40,7 @@ import {
   FlameIcon as Fire,
   Lightbulb,
   CircleQuestionMark,
+  Brain,
 } from "lucide-react-native";
 
 export const LucideIcons = {
@@ -84,4 +85,5 @@ export const LucideIcons = {
   Fire,
   Lightbulb,
   CircleQuestionMark,
+  Brain,
 };
