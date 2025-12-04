@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, Pressable, Image } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity, Pressable, Image, Platform } from "react-native";
 import React, { useState, useRef } from "react";
 import Animated, { FadeInDown, FadeInUp, FadeIn, SlideInRight } from "react-native-reanimated";
-import { Heart, MoreVertical, Scissors, Copy, ClipboardList, ShareIcon, Mic } from "lucide-react-native";
+import { Heart, MoreVertical, Scissors, Copy, ClipboardList, ShareIcon, Mic, ChevronLeft, ArrowRight } from "lucide-react-native";
 import { images } from "@/constants/image-strings";
 import { router } from "expo-router";
 
@@ -10,6 +10,16 @@ const { width, height } = Dimensions.get("window");
 const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  // platform adjustments to ensure layout fits on Android
+  const isAndroid = Platform.OS === "android";
+  const androidAdjust = {
+    slidePaddingTop: isAndroid ? 44 : 60, // slightly reduced top padding on Android
+    titleFontSize: isAndroid ? 60 : 72,
+    titleLineHeight: isAndroid ? 68 : 80,
+    noteCardMinHeight: isAndroid ? 140 : 160, // reduce note card height to avoid overflow
+  };
+  const noteCardStyleBase = { minHeight: androidAdjust.noteCardMinHeight };
 
   const handleScroll = (event: any) => {
     const offsetX = event.nativeEvent.contentOffset.x;
@@ -25,8 +35,16 @@ const Onboarding = () => {
       });
     } else {
       // Navigate to main app
-      router.replace("/(auth)/welcome")
-      
+      router.replace("/(auth)/welcome");
+    }
+  };
+
+  const goBack = () => {
+    if (currentIndex > 0) {
+      scrollViewRef.current?.scrollTo({
+        x: width * (currentIndex - 1),
+        animated: true,
+      });
     }
   };
 
@@ -35,7 +53,7 @@ const Onboarding = () => {
       <ScrollView ref={scrollViewRef} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={handleScroll} scrollEventThrottle={16} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
         {/* Slide 1 - Black Background */}
         <View style={[styles.slide, { width, backgroundColor: "#141718" }]}>
-          <View style={styles.slideContent}>
+          <View style={[styles.slideContent, { paddingTop: androidAdjust.slidePaddingTop }]}>
             {/* Header with dots menu */}
             <View style={styles.header}>
               <TouchableOpacity style={styles.dotsMenu}>
@@ -44,7 +62,10 @@ const Onboarding = () => {
             </View>
 
             {/* Title */}
-            <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleWhite}>
+            <Animated.Text
+              entering={FadeInDown.delay(100)}
+              style={[styles.titleWhite, { fontSize: androidAdjust.titleFontSize, lineHeight: androidAdjust.titleLineHeight }]}
+            >
               My{"\n"}Notes
             </Animated.Text>
 
@@ -67,7 +88,7 @@ const Onboarding = () => {
               {/* Row 1 */}
               <View style={styles.gridRow}>
                 {/* Card 1 - Coral */}
-                <View style={[styles.noteCard, { backgroundColor: "#f4a292" }]}>
+                <View style={[styles.noteCard, noteCardStyleBase, { backgroundColor: "#f4a292" }]}>
                   <View style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Plan for{"\n"}The Day</Text>
                     <Heart color="#000" size={20} fill="transparent" />
@@ -91,7 +112,7 @@ const Onboarding = () => {
                 </View>
 
                 {/* Card 2 - Yellow */}
-                <View style={[styles.noteCard, { backgroundColor: "#f4c542" }]}>
+                <View style={[styles.noteCard, noteCardStyleBase, { backgroundColor: "#f4c542" }]}>
                   <View style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Image{"\n"}Notes</Text>
                     <Heart color="#000" size={20} fill="transparent" />
@@ -107,7 +128,7 @@ const Onboarding = () => {
               {/* Row 2 */}
               <View style={styles.gridRow}>
                 {/* Card 3 - Cream */}
-                <View style={[styles.noteCard, { backgroundColor: "#f5f1e3" }]}>
+                <View style={[styles.noteCard, noteCardStyleBase, { backgroundColor: "#f5f1e3" }]}>
                   <View style={styles.cardHeaderSmall}>
                     <Text style={styles.emojiIcon}>😊</Text>
                     <Text style={styles.noteCount}>5 Notes</Text>
@@ -117,7 +138,7 @@ const Onboarding = () => {
                 </View>
 
                 {/* Card 4 - Light Blue */}
-                <View style={[styles.noteCard, { backgroundColor: "#b4c5e0" }]}>
+                <View style={[styles.noteCard, noteCardStyleBase, { backgroundColor: "#b4c5e0" }]}>
                   <View style={styles.cardHeaderSmall}>
                     <Text style={styles.noteCount}>3 Notes</Text>
                     <Heart color="#000" size={18} fill="transparent" />
@@ -127,33 +148,28 @@ const Onboarding = () => {
               </View>
 
               {/* Card 5 - Light Green */}
-              <View style={[styles.noteCard, styles.noteCardWide, { backgroundColor: "#b8d8a5" }]}>
+              <View style={[styles.noteCard, noteCardStyleBase, styles.noteCardWide, { backgroundColor: "#b8d8a5" }]}>
                 <View style={styles.cardHeaderSmall}>
-                  <Text style={styles.cardTitleSmall}>List of{"\n"}Something</Text>
+                  <View className="flex flex-row gap-x-4">
+                    <Text style={styles.cardTitleSmall}>List of{"\n"}Something</Text>
+                    <TouchableOpacity style={styles.fabMic}>
+                      <Mic size={20} color="#000" />
+                    </TouchableOpacity>
+                  </View>
                   <Heart color="#000" size={18} fill="transparent" />
                 </View>
               </View>
             </Animated.View>
-
-            {/* Floating Action Buttons */}
-            <View style={styles.fabContainer}>
-              <TouchableOpacity style={styles.fab}>
-                <Text style={styles.fabText}>+</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.fabMic}>
-                <Mic size={24} />
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
 
         {/* Slide 2 - Cream Background */}
         <View style={[styles.slide, { width, backgroundColor: "#f5f1e3" }]}>
-          <View style={styles.slideContent}>
+          <View style={[styles.slideContent, { paddingTop: androidAdjust.slidePaddingTop }]}>
             {/* Header */}
             <View style={styles.headerCream}>
-              <TouchableOpacity style={styles.backButton}>
-                <Text style={styles.backArrow}>‹</Text>
+              <TouchableOpacity style={styles.backButton} onPress={goBack}>
+                <ChevronLeft size={24} color="#000" />
               </TouchableOpacity>
               <Text style={styles.sharedText}>Shared to</Text>
               <View style={styles.avatarGroup}>
@@ -211,12 +227,12 @@ const Onboarding = () => {
 
         {/* ------------------------------------Slide 3 - Cream & Black Split */}
         <View style={[styles.slide, { width, backgroundColor: "#f5f1e3" }]}>
-          <View style={styles.slideContent}>
-            {/* Header (Reminder about for slide 3) */}
-            <View style={styles.headerCream}>
-              <TouchableOpacity style={styles.backButton}>
-                <Text style={styles.backArrow}>‹</Text>
-              </TouchableOpacity>
+          <View style={[styles.slideContent, { paddingTop: androidAdjust.slidePaddingTop }]}>
+           {/* Header (Reminder about for slide 3) */}
+           <View style={styles.headerCream}>
+             <TouchableOpacity style={styles.backButton} onPress={goBack}>
+               <ChevronLeft size={24} color="#000" />
+             </TouchableOpacity>
 
               <Text style={styles.sharedText}>Reminder about</Text>
               <View style={styles.avatarGroup}>
@@ -230,10 +246,10 @@ const Onboarding = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Title for Notes AI Brainbox */}
-            <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleBlack}>
-              Notes AI{"\n"}Brainbox
-            </Animated.Text>
+             {/* Title for Notes AI Brainbox */}
+             <Animated.Text entering={FadeInDown.delay(100)} style={styles.titleBlack}>
+               Notes AI{"\n"}Brainbox
+             </Animated.Text>
 
             {/* New description/write-up for Notes AI Brainbox */}
             <Animated.Text entering={FadeInUp.delay(200)} style={styles.descriptionBlack}>
@@ -271,10 +287,21 @@ const Onboarding = () => {
         ))}
       </View>
 
-      {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={goToNext}>
-        <Text style={styles.nextButtonText}>{currentIndex === 2 ? "Start" : "›"}</Text>
-      </TouchableOpacity>
+      {/* Global floating FAB row — Skip (left)  */}
+      <View style={styles.globalFabContainer} pointerEvents="box-none">
+        <TouchableOpacity
+          style={styles.fabSkip}
+          onPress={() => {
+            router.replace("/(auth)/welcome");
+          }}
+        >
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.fabForward} onPress={goToNext}>
+          <ArrowRight size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -450,25 +477,70 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: 15,
+    paddingHorizontal: 40,
   },
-  fab: {
-    width: 60,
-    height: 60,
+  globalFabContainer: {
+    position: "absolute",
+    bottom: 32,
+    left: 20,
+    right: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  fabSkip: {
+    height: 48,
+    minWidth: 80,
     borderRadius: 30,
-    backgroundColor: "#000",
+    paddingHorizontal: 18,
+    backgroundColor: "#141718",
     justifyContent: "center",
     alignItems: "center",
+    elevation: 4,
+  },
+  skipButton: {
+    height: 40,
+    borderRadius: 30,
+    paddingHorizontal: 18,
+    backgroundColor: "#141718",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  skipText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  centerAction: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   fabMic: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  centerText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  fabForward: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#141718",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 6,
   },
   fabText: {
     color: "#fff",
@@ -742,33 +814,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   paginationDot: {
-    width: 8,
-    height: 8,
+    width: 12,
+    height: 5,
     borderRadius: 4,
     backgroundColor: "rgba(0,0,0,0.2)",
   },
   paginationDotActive: {
-    width: 24,
+    width: 30,
     backgroundColor: "#000",
-  },
-  nextButton: {
-    position: "absolute",
-    bottom: 32,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 48,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 6,
-    paddingHorizontal: 8,
-  },
-  nextButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
   },
 });
 
