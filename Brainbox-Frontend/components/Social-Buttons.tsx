@@ -1,22 +1,105 @@
-import { Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { Text, View, TouchableOpacity, Keyboard, Platform, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 
 const SocialButtons = () => {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardVisible(true);
+      setKeyboardHeight(e.endCoordinates?.height ?? 0);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  // When keyboard is visible on Android, move the component down (negative bottom)
+  const bottomOffset = Platform.OS === "android" && keyboardVisible ? -keyboardHeight : 20;
+
   return (
-    <View className="absolute left-0 right-0 bottom-20 px-6 pb-6">
-      <View className="flex-1 h-[1px] bg-gray-300 my-10" />
-      <Text className="text-gray-400 text-center text-sm mb-6">Continue With Accounts</Text>
-      <View className="flex-row justify-between gap-4">
-        <TouchableOpacity className="flex-1 bg-[#F5C5C5] rounded-2xl py-4 mr-2 items-center justify-center">
-          <Text className="text-[#E85D5D] text-center font-semibold tracking-widest">GOOGLE</Text>
+    <View style={[styles.wrapper, { bottom: bottomOffset }]}>
+      <View style={styles.divider} />
+      <Text style={styles.hint}>Continue With Accounts</Text>
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.btn, styles.google]}>
+          <Text style={styles.googleText}>GOOGLE</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex-1 bg-[#C5D7E8] rounded-2xl py-4 ml-2 items-center justify-center">
-          <Text className="text-[#5D8FBD] text-center font-semibold tracking-widest">FACEBOOK</Text>
+        <TouchableOpacity style={[styles.btn, styles.facebook]}>
+          <Text style={styles.facebookText}>FACEBOOK</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
+};
 
-export default SocialButtons
+const styles = StyleSheet.create({
+  wrapper: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    // default bottom applied dynamically
+    paddingHorizontal: 24,
+    paddingBottom: 18,
+    alignItems: "center",
+    // ensure it's on top of most content but still can be behind the keyboard when moved
+    zIndex: 1000,
+    elevation: 10,
+  },
+  divider: {
+    alignSelf: "stretch",
+    height: 1,
+    backgroundColor: "#D1D5DB",
+    marginVertical: 20,
+  },
+  hint: {
+    color: "#9CA3AF",
+    textAlign: "center",
+    fontSize: 13,
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    width: "100%",
+  },
+  btn: {
+    flex: 1,
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  google: {
+    backgroundColor: "#F5C5C5",
+    marginRight: 8,
+  },
+  facebook: {
+    backgroundColor: "#C5D7E8",
+    marginLeft: 8,
+  },
+  googleText: {
+    color: "#E85D5D",
+    fontWeight: "700",
+    letterSpacing: 2,
+  },
+  facebookText: {
+    color: "#5D8FBD",
+    fontWeight: "700",
+    letterSpacing: 2,
+  },
+});
+
+export default SocialButtons;
