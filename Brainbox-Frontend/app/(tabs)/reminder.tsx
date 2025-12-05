@@ -76,7 +76,7 @@ const ReminderHistoryScreen = () => {
       <StatusBar barStyle="dark-content" />
 
       {/* Fixed App Bar (stays visible) */}
-      <View className="px-5 pt-14 pb-2">
+      <View className={`px-5 ${Platform.OS === "ios" ? "pt-20" : "pt-14"} pb-2`}>
         <View className="flex-row items-center justify-between mb-2">
           <BackButton />
 
@@ -87,13 +87,7 @@ const ReminderHistoryScreen = () => {
       </View>
 
       {/* Use Animated.ScrollView to drive header collapse */}
-      <Animated.ScrollView
-        className="flex-1 px-5"
-        showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: Platform.OS === "ios" ? 180 : 140 }}
-      >
+      <Animated.ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false} onScroll={scrollHandler} scrollEventThrottle={16} contentContainerStyle={{ paddingBottom: Platform.OS === "ios" ? 180 : 140 }}>
         {/* Reserve space and animate the large date block */}
         <View style={{ height: COLLAPSIBLE_HEIGHT, overflow: "hidden" }}>
           <Animated.View entering={FadeInDown.duration(500)}>
