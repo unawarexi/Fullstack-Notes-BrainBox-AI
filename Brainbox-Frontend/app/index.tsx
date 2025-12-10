@@ -1,16 +1,46 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
+import { storageService } from "@/core/services/storage-service";
+import { authService } from "@/core/auth/firebase-auth";
+import { useUserStore, useUserBridge } from "../store/user-store";
 
 export default function Index() {
-  // Check if user has seen onboarding or is authenticated
-  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isVerified, setIsVerified] = useState<boolean | null>(null);
 
-  // Replace with your actual logic (AsyncStorage, etc.)
+  const setUser = useUserStore((s) => s);
+  const userBridge = useUserBridge(); // <-- bridge that uses react-query hooks
+
   useEffect(() => {
-    // Check if user has completed onboarding
-    // Check if user is authenticated
+    (async () => {
+      // Check onboarding flag
+      const seen = await storageService.hasSeenOnboarding();
+      setIsFirstLaunch(!seen);
+
+      // Check auth token presence/expiry
+      const signed = await storageService.isAuthenticated();
+      setIsAuthenticated(signed);
+
+      if (signed) {
+        // reload and check firebase email verification
+        const verified = await authService.reloadAndCheckEmailVerified();
+        setIsVerified(verified);
+
+        // fetch current user from API via the bridge
+        try {
+          await userBridge.fetchCurrentUser();
+        } catch {
+          // ignore
+        }
+      }
+
+      setInitialized(true);
+    })();
   }, []);
+
+  if (!initialized) return null; // or a loading placeholder
 
   if (isFirstLaunch) {
     return <Redirect href="/(auth)/onboarding" />;
@@ -20,5 +50,11 @@ export default function Index() {
     return <Redirect href="/(auth)/sign-in" />;
   }
 
-  return <Redirect href="/(auth)/onboarding" />;
+  // authenticated but not verified -> verification screen
+  if (!isVerified) {
+    return <Redirect href="/(auth)/verify-email" />;
+  }
+
+  // signed & verified
+  return <Redirect href="/(tabs)" />;
 }
