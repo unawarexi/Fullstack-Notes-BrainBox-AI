@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.brainbox.notesbrainbox"
+      "bundleIdentifier": "com.notebook.brainbox",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package" : "com.brainbox.notesbrainbox"
+      "package": "com.notebook.brainbox",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
