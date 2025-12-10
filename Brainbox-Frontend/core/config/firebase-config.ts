@@ -1,23 +1,25 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {initializeAuth} from "firebase/auth"
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import asyncStorage from "@react-native-async-storage/async-storage";
 // import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Read Firebase config from environment variables (moved to .env)
 const firebaseConfig = {
-  apiKey: "AIzaSyAEXWErrTNsMKe5_gn8W3OIdrrh1BAY29E",
-  authDomain: "notes-brainbox-ai.firebaseapp.com",
-  projectId: "notes-brainbox-ai",
-  storageBucket: "notes-brainbox-ai.firebasestorage.app",
-  messagingSenderId: "201152227204",
-  appId: "1:201152227204:web:64ffbb86068dba227e5fd1",
-  measurementId: "G-TLWG1HE3YG",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || "",
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const auth = initializeAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(asyncStorage)
+});
 // const analytics = getAnalytics(app);

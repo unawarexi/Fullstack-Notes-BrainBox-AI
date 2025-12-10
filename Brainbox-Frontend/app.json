@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.brainbox.notesbrainbox"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/logo/Logo.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package" : "com.brainbox.notesbrainbox"
     },
     "web": {
       "bundler": "metro",
@@ -28,6 +30,7 @@
     },
     "plugins": [
       "expo-router",
+      
       [
         "expo-splash-screen",
         {
@@ -41,7 +44,15 @@
         }
       ],
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+     [
+       "expo-build-properties",
+       {
+        "ios": {
+          "useFrameworks": "static"
+        }
+       }
+     ]
     ],
     "experiments": {
       "typedRoutes": true,
