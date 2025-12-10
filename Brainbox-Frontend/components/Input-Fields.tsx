@@ -7,6 +7,7 @@ type InputFieldProps = {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
+  onBlur?: () => void; // added to support react-hook-form Controller
   secureTextEntry?: boolean;
   keyboardType?: any;
   autoCapitalize?: "none" | "words" | "sentences" | "characters";
@@ -20,6 +21,7 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   value,
   onChangeText,
+  onBlur,
   secureTextEntry = false,
   keyboardType = "default",
   autoCapitalize = "none",
@@ -35,6 +37,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <TextInput
         value={value}
         onChangeText={onChangeText}
+        onBlur={onBlur} // forwarded
         placeholder={placeholder}
         placeholderTextColor="#9CA3AF"
         className={inputClassName}
