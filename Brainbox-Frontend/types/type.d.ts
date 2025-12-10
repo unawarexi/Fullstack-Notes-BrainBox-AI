@@ -39,3 +39,29 @@ declare interface CustomBottomSheetProps {
   onChange?: (index: number) => void;
   onAnimate?: (fromIndex: number, toIndex: number) => void;
 }
+
+declare interface User {
+  id: string;
+  email: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+declare interface CreateUserPayload {
+  email: string;
+  password: string;
+}
+
+declare interface UpdateUserPayload {
+  email?: string;
+  password?: string;
+}
+
+declare type ToastType = "success" | "error" | "info" | "warning";
+
+declare interface ToastState {
+  visible: boolean;
+  message: string;
+  type: ToastType;
+  duration?: number;
+}
