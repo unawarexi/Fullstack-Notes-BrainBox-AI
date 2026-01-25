@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id        String    @id @default(cuid())
+  email     String?   @unique
+  name      String?
+  devices   Device[]
+  notes     Note[]
+  artisans  Artisan[]
+  createdAt DateTime  @default(now())
+}
+
+
+model Device {
+  id       String   @id @default(cuid())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  lastSeen DateTime @default(now())
+
+  @@index([userId])
+}
+
+
+model Note {
+  id         String    @id @default(cuid())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  title      String?
+  content    String    @db.Text // main text
+  kind       NoteKind  @default(JOURNAL)
+  priority   Int       @default(3)
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  locationId String?
+  media      Media[]
+  aiSummary  String?   @db.Text
+  aiPlan     Json?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  synced     Boolean   @default(false)
+
+  @@index([userId])
+  @@index([locationId])
+  @@index([kind])
+  @@index([createdAt])
+}
+
+
+enum NoteKind {
+  JOURNAL
+  QUICK
+  REMINDER
+  TASK
+}
+
+
+model Media {
+  id        String   @id @default(cuid())
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  noteId    String
+  url       String
+  mimeType  String
+  createdAt DateTime @default(now())
+
+  @@index([noteId])
+}
+
+
+model Location {
+  id        String    @id @default(cuid())
+  lat       Float
+  lng       Float
+  name      String?
+  address   String?
+  notes     Note[]
+  artisans  Artisan[]
+
+  @@index([lat, lng])
+}
+
+
+model Artisan {
+  id         String    @id @default(cuid())
+  name       String
+  category   String
+  phone      String?
+  address    String?
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  locationId String?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([locationId])
+  @@index([category])
+}
+
+
+model SyncRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  payload   Json
+  createdAt DateTime @default(now())
+  status    String   @default("pending")
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
