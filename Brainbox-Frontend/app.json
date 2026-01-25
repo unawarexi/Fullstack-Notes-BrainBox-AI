@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "Notes-Brainbox",
+    "slug": "notebook-brainbox",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo/Logo.png",
+    "scheme": "notesbrainbox",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.notebook.brainbox",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "useAppleSignIn": true,
+      "supportedDevices": [
+        "iphone",
+        "ipad",
+        "ipod"
+      ]
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/logo/Logo.png",
+        "backgroundImage": "./assets/logo/Logo.png",
+        "monochromeImage": "./assets/logo/Logo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.notebook.brainbox",
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/logo/Logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-apple-authentication",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/logo/Logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ],
+      "expo-secure-store",
+      "expo-sqlite",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9f637be4-f8de-4cfd-9d80-3895416375d0"
+      }
+    },
+    "owner": "unawarexi"
+  }
+}
