@@ -55,18 +55,25 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   // Auth actions delegate to authService and update tokens via storageService
   signUp: async (name: string, email: string, password: string) => {
+    console.log("[USER-STORE] signUp started", { name, email });
     set({ loading: true });
     try {
+      console.log("[USER-STORE] Calling authService.signUp...");
       const firebaseUser = await authService.signUp(name, email, password);
-      set({ 
-        user: { 
-          id: firebaseUser.uid, 
-          email: firebaseUser.email || "", 
-          name: firebaseUser.displayName || name 
-        } 
-      });
+      console.log("[USER-STORE] Firebase user created:", firebaseUser.uid);
+      
+      const user = { 
+        id: firebaseUser.uid, 
+        email: firebaseUser.email || "", 
+        name: firebaseUser.displayName || name 
+      };
+      console.log("[USER-STORE] Setting user:", user);
+      set({ user });
+      
       get().setToast("Verification email sent. Please check your inbox.", "success", 5000);
+      console.log("[USER-STORE] signUp completed successfully");
     } catch (err: any) {
+      console.error("[USER-STORE] signUp error:", err);
       get().setToast(err?.message || "Sign up failed", "error");
       throw err;
     } finally {
@@ -75,12 +82,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   signIn: async (email: string, password: string) => {
+    console.log("[USER-STORE] signIn started", { email });
     set({ loading: true });
     try {
+      console.log("[USER-STORE] Calling authService.signIn...");
       const firebaseUser = await authService.signIn(email, password);
+      console.log("[USER-STORE] Firebase user signed in:", firebaseUser.uid);
+      console.log("[USER-STORE] Email verified:", firebaseUser.emailVerified);
       
-      // Check email verification
       if (!firebaseUser.emailVerified) {
+        console.log("[USER-STORE] Email not verified");
         set({ 
           user: { 
             id: firebaseUser.uid, 
@@ -92,15 +103,18 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
       
-      set({ 
-        user: { 
-          id: firebaseUser.uid, 
-          email: firebaseUser.email || "",
-          name: firebaseUser.displayName || undefined
-        } 
-      });
+      const user = { 
+        id: firebaseUser.uid, 
+        email: firebaseUser.email || "",
+        name: firebaseUser.displayName || undefined
+      };
+      console.log("[USER-STORE] Setting user:", user);
+      set({ user });
+      
       get().setToast("Signed in successfully", "success");
+      console.log("[USER-STORE] signIn completed successfully");
     } catch (err: any) {
+      console.error("[USER-STORE] signIn error:", err);
       get().setToast(err?.message || "Sign in failed", "error");
       throw err;
     } finally {
@@ -110,18 +124,25 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   // Google sign-in flow
   signInWithGoogle: async () => {
+    console.log("[USER-STORE] signInWithGoogle started");
     set({ loading: true });
     try {
+      console.log("[USER-STORE] Calling authService.signInWithGoogle...");
       const firebaseUser = await authService.signInWithGoogle();
-      set({ 
-        user: { 
-          id: firebaseUser.uid, 
-          email: firebaseUser.email || "",
-          name: firebaseUser.displayName || undefined
-        } 
-      });
+      console.log("[USER-STORE] Firebase user signed in:", firebaseUser.uid);
+      
+      const user = { 
+        id: firebaseUser.uid, 
+        email: firebaseUser.email || "",
+        name: firebaseUser.displayName || undefined
+      };
+      console.log("[USER-STORE] Setting user:", user);
+      set({ user });
+      
       get().setToast("Signed in with Google successfully", "success");
+      console.log("[USER-STORE] signInWithGoogle completed successfully");
     } catch (err: any) {
+      console.error("[USER-STORE] signInWithGoogle error:", err);
       get().setToast(err?.message || "Google sign-in failed", "error");
       throw err;
     } finally {
@@ -130,12 +151,17 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   signOut: async () => {
+    console.log("[USER-STORE] signOut started");
     set({ loading: true });
     try {
+      console.log("[USER-STORE] Calling authService.logout...");
       await authService.logout();
+      console.log("[USER-STORE] Clearing user state...");
       set({ user: null });
       get().setToast("Signed out successfully", "info");
+      console.log("[USER-STORE] signOut completed successfully");
     } catch (err: any) {
+      console.error("[USER-STORE] signOut error:", err);
       get().setToast(err?.message || "Sign out failed", "error");
       throw err;
     } finally {
@@ -144,11 +170,15 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   checkEmailVerified: async () => {
+    console.log("[USER-STORE] checkEmailVerified started");
     set({ loading: true });
     try {
+      console.log("[USER-STORE] Calling authService.reloadAndCheckEmailVerified...");
       const verified = await authService.reloadAndCheckEmailVerified();
+      console.log("[USER-STORE] Email verified:", verified);
       return verified;
     } catch (err) {
+      console.error("[USER-STORE] checkEmailVerified error:", err);
       get().setToast("Failed to check verification", "error");
       return false;
     } finally {
@@ -169,34 +199,43 @@ export function useUserBridge() {
   const deleteUserMut = useDeleteUser();
 
   const fetchCurrentUser = async () => {
+    console.log("[USER-BRIDGE] fetchCurrentUser started");
     setLoading(true);
     try {
+      console.log("[USER-BRIDGE] Getting Firebase user...");
       const firebaseUser = authService.getCurrentUser();
+      console.log("[USER-BRIDGE] Firebase user exists:", !!firebaseUser);
+      
       if (!firebaseUser) {
+        console.log("[USER-BRIDGE] No Firebase user, clearing state");
         setUser(null);
         return null;
       }
 
+      console.log("[USER-BRIDGE] Fetching user from API...");
       const res = await currentUserQuery.refetch();
+      console.log("[USER-BRIDGE] API response:", !!res?.data);
+      
       if (res?.data) {
         const mergedUser = {
           ...res.data,
           name: firebaseUser.displayName || res.data.name,
         };
+        console.log("[USER-BRIDGE] Setting merged user:", mergedUser);
         setUser(mergedUser);
         return mergedUser;
       }
 
-      // If API call fails but we have Firebase user, use that
-      setUser({
+      console.log("[USER-BRIDGE] API call failed, using Firebase user");
+      const fallbackUser = {
         id: firebaseUser.uid,
         email: firebaseUser.email || "",
         name: firebaseUser.displayName || undefined,
-      });
+      };
+      setUser(fallbackUser);
       return null;
     } catch (err: any) {
-      console.error("Failed to fetch user:", err);
-      // Don't show error toast here - let calling code handle it
+      console.error("[USER-BRIDGE] Failed to fetch user:", err);
       return null;
     } finally {
       setLoading(false);

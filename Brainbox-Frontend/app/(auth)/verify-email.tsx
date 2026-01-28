@@ -52,12 +52,11 @@ const VerifyEmail = () => {
 
       <View className="items-center">
         {/* Placeholder for GIF/Animation */}
-        <View className="w-64 h-64 bg-gray-100 rounded-2xl items-center justify-center mb-8">
+        <View className="w-72 h-72 items-center justify-center mb-8">
           {/* Replace this View with your GIF Image */}
-          <Image source={require("@/assets/images/email-verification.gif")} className="w-full h-full" resizeMode="contain" />
           {/* Alternative: Use a placeholder icon if no GIF yet */}
-          <View className="w-24 h-24 bg-gray-300 rounded-full items-center justify-center">
-            <LottieView source={images.email} autoPlay loop={false} resizeMode="contain" style={{ width: 200, height: 200 }} />
+          <View className="w-24 h-24  rounded-full items-center justify-center">
+            <LottieView source={images.email} autoPlay loop={true} resizeMode="contain" style={{ width: 250, height: 300 }} />
           </View>
         </View>
 

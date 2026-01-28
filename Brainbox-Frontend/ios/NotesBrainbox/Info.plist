@@ -39,6 +39,12 @@
           <string>com.googleusercontent.apps.201152227204-sltah0c74mmpcct1ubacjlrskk2241kc</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+notebook-brainbox</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
